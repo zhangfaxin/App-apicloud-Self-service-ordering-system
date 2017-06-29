@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="copyright" content="www.apicloud.com" />
+<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+<title>推荐</title>
+<link rel="stylesheet" type="text/css" href="../../css/api.css" />
+<style>
+	html {height: 100%;}
+	body {height: 100%;background: #f0f0f0;}
+	
+	input {height: 50px;font-size: 18px;color: #8E8C8C;width: 80%;}
+	input::-webkit-input-placeholder {color: #ccc;}
+	.divider {height: 15px;}
+	.email,.passwd,.nickname {/*margin-top: 3px;*/background: #fff;}
+	.passwd img, .email img {vertical-align: top;}
+	.item {background-color: #fff; border-bottom: 1px solid #e0e0e0;position: relative;}
+	/*.email, .passwd, .btn {margin:3px 10px;}*/
+	.btn {margin:3px 10px;}
+	.btn {background: #ff6836;height: 40px; text-align: center; line-height: 40px; font-size: 20px;margin-top: 20px;border-radius: 5px;}
+	.btn button {color: #fff;}
+		.nickname img {height: 25px;margin-top: 10px; margin-left: 10px;margin-right: 10px;}
+
+	.email img {width: 25px; margin-top: 15px; margin-left: 10px; margin-right: 9px;}
+	.passwd img {height: 25px;margin-top: 10px; margin-left: 10px;margin-right: 10px;}
+	.secretword img {height: 25px;margin-top: 10px; margin-left: 10px;margin-right: 10px;}
+
+	/* 底部样式 */
+	.bottom {/*position: absolute;bottom: 0;*/width: 100%; text-align: center;/*padding-bottom: 20px;*/font-size: 12px;}
+	.bottom img {height: 50px;}
+	.bottom .arrow {text-align: center;margin: 10px 0;}
+	.bottom .arrow img {width: 40px;height: 20px;}
+	#qqpic {margin-right: 10px; margin-left: 10px;}
+	.thirdinfo {color: #666;margin-top: 10px;}
+
+	.secretword input {width: 50%;}
+	.secretimg {position: absolute; right: 0; top: 0; height: 56px; margin-right: 10px; border-left: 1px solid #e0e0e0;}
+	.secretimg img {height: 60%;}
+
+	.thirdcompy .left {margin-right: 20px;}
+	.thirdcompy .left , .thirdcompy .right {width: 40%; display: inline-block;background: #fff;border: 1px solid #e0e0e0;border-radius: 4px;vertical-align: top;text-align: left; font-size: 18px;}
+	.thirdcompy .left img , .thirdcompy .right img {width: 30px;height: 30px;float: left;margin: 5px 10px;}
+	.thirdcompy span {line-height: 40px;color: #666;}
+
+	.loginmore {margin-top: 10px;}
+	.loginmore span {color: #0078ff;}
+	.loginmore .forget {margin-left: 10px;}
+	.loginmore .phone {margin-right: 10px;float: right;}
+
+	.btnhover {background-color: #dcdcdc !important;}
+	.buyhover {background-color: rgba(252, 85, 0, 0.6) !important;}
+	.presshover {background-color: #FAFAFA !important;}
+	.txthover {color: rgba(0, 120, 255, 0.6) !important;}
+	input {outline: none;}
+</style>
+</head>
+<body>
+	<div class="divider"></div>
+	<form action="">
+			<div class="item nickname"><img src="../../image/login01.png" alt=""><input type="text" placeholder="昵称" id="nickname"></div>
+
+		<div class="item email"><img src="../../image/login01.png" alt=""><input type="text" placeholder="邮箱/手机号/用户名" id="email"></div>
+		<div class="item passwd"><img src="../../image/login02.png" alt=""><input type="password" placeholder="密码" id="passwd">
+		</div>
+		<div class="item secretword"><img src="../../image/login03.png" alt=""><input type="text" placeholder="验证码" id="secretword">
+			<div class="secretimg"><img src="../../image/secretword.png"></div>
+		</div>
+		<div class="btn" tapmode="buyhover" onclick="register()"><button type="submit">点击注册</button></div>
+		
+	</form>
+
+	
+	<div class="divider" id="bottomdivider"></div>
+	
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+
+	function openLoginmore () {
+		api.openFrame ({
+            name: 'loginmore',
+            url: './loginmore.html',
+            rect:{
+                x:0,
+                y:headerHeight,
+                w:'auto',
+                h:'auto'
+            },
+            bounces: false,
+            delay:200
+        });
+	}
+	
+function  register(){
+	var email = $api.val($api.byId('email'));
+	var password = $api.val($api.byId('passwd'));
+	var secretword= $api.val($api.byId('secretword'));
+	var nickname = $api.val($api.byId('nickname'));
+	var model=api.require('model');
+	var query=api.require('query');
+	var count,secretword;
+	if(email.length<=0){
+		alert("请输入账号");
+		}else if(password.length<=0){
+		alert("请输入密码");
+		}else if(secretword.length<=0){
+		alert("请输入验证码");
+		}else if(secretword!='5cat38'){
+		alert("验证码错误");
+		}else if(password.length>0&&email.length>0&&secretword=='5cat38'){
+	   api.showProgress({
+		style: 'default',
+    	animationType: 'fade',
+    	title: '努力加载中...',
+    	text: '先喝杯茶...',
+    	modal: false
+	});
+    query.createQuery({
+    },function(ret,err){
+    	if(ret&&ret.qid){
+    	model.count({
+	        class:'userdata',
+	        qid:ret.qid
+        },function(ret,err){
+        	if(ret){
+        	 count=ret.count;
+        	 model.findAll({
+	             class:'userdata',
+	             qid:ret.qid
+             },function(ret,err){
+             	//coding...
+             	if(ret){
+             		for(var i=0;i<count;i++){
+             			if(ret[i].username==email){
+             				api.hideProgress();
+             				alert("账号已注册");
+             				break;
+             			}
+					}
+					if(i==count){
+             		model.insert({
+	                     class:'userdata',
+	                     value:{username:email,password:password,nickname:nickname}
+                     },function(ret,err){
+                     	//coding...
+                     	if(ret){
+                     	api.hideProgress();
+                     	api.alert({
+                     	title:'注册成功',
+                     	buttons:['确定']
+                         },function(ret,err){
+                         	//coding...
+                         	if(ret.buttonIndex==1){
+                         	api.closeWin();
+                         	}
+                         });
+                     	}
+                     });
+             	}
+             }
+             });
+			}
+        });
+        }
+    });
+}
+}
+</script>
+</html>
